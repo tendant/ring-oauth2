@@ -54,7 +54,7 @@
               refresh_token (assoc :refresh-token refresh_token)
               id_token (assoc :id-token id_token))))
 
-(defn- get-authorization-code [request]
+(defn get-authorization-code [request]
   (get-in request [:query-params "code"]))
 
 (defn- request-params [profile request]
@@ -70,7 +70,7 @@
                                (merge {:client_id     id
                                        :client_secret secret}))))
 
-(defn- get-access-token
+(defn get-access-token
   [{:keys [access-token-uri client-id client-secret basic-auth?]
     :or {basic-auth? false} :as profile} request]
   (format-access-token
@@ -126,5 +126,5 @@
       (if-let [profile (launches uri)]
         ((make-launch-handler profile) request)
         (if-let [profile (redirects uri)]
-          ((:redirect-handler profile (make-redirect-handler profile)) request)
+          (((:make-redirect-handler profile make-redirect-handler) profile) request)
           (handler (assoc-access-tokens request)))))))
