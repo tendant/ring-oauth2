@@ -124,7 +124,7 @@
         redirects (into {} (map (juxt parse-redirect-url identity)) profiles)]
     (fn [{:keys [uri] :as request}]
       (if-let [profile (launches uri)]
-        ((make-launch-handler profile) request)
+        (((:make-launch-handler profile make-launch-handler) profile) request)
         (if-let [profile (redirects uri)]
           (((:make-redirect-handler profile make-redirect-handler) profile) request)
           (handler (assoc-access-tokens request)))))))
